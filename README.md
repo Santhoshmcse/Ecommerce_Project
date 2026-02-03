@@ -1,115 +1,120 @@
-# E-Commerce Backend API (Spring Boot)
+# E-Commerce Backend API – Spring Boot
 
 ## Overview
-This project is a backend REST API for an e-commerce system built using **Spring Boot**.  
-It focuses on **clean domain modeling** and **real-world business rules**, including cart management, checkout validation, and immutable order creation.
+This project is a backend REST API for an e-commerce system built using Spring Boot.
+The focus of this project is clean backend architecture, real-world business rules,
+and secure API design rather than UI.
 
-The system separates **temporary cart state** from **permanent orders**, handles **product availability and soft deletion**, and ensures **pricing consistency** across the purchase lifecycle.
+The system separates temporary cart state from immutable orders, preserves pricing
+consistency, and handles product lifecycle management using active and soft-delete
+concepts.
+
+This project is designed as a portfolio-grade backend application.
 
 ---
 
 ## Tech Stack
-- Java 17  
-- Spring Boot  
-- Spring Security + JWT  
-- Spring Data JPA (Hibernate)  
-- MySQL / PostgreSQL  
-- Maven  
+- Java 17
+- Spring Boot
+- Spring Security + JWT
+- Spring Data JPA (Hibernate)
+- MySQL
+- Maven
 
 ---
 
-## High-Level Flow
-
-### Design Highlights
-- Cart is **mutable and temporary**
-- Order is **immutable and a snapshot**
-- Product price is **frozen at cart time**
-- Product lifecycle handled using **active + soft delete**
-- Stock is reduced **only after payment success**
+## High-Level System Flow
+User → Cart → Checkout → Order → Payment (Mock)
 
 ---
 
-## Modules Implemented
+## Core Modules
 
 ### Authentication & Authorization
 - JWT-based authentication
 - Role-based authorization (USER / ADMIN)
-- Secure access using Spring Security
+- Secured endpoints using Spring Security
+- User identity derived only from JWT (no userId from client)
 
 ### Product Management
 - Product CRUD operations
-- `active` flag for temporary availability
-- `deleted` flag for soft deletion (lifecycle removal)
-- Indexed search fields for performance
+- active flag for temporary availability
+- deleted flag for soft delete (lifecycle removal)
+- Deleted products cannot be added to cart or checkout
 
 ### Cart Management
 - One cart per user
-- Add, update, remove cart items
+- Add, update, and remove cart items
 - Prevents duplicate products in cart
-- Stores `priceAtAddTime` to preserve pricing
+- Uses priceAtAddTime to freeze pricing
+- Cart is mutable and temporary
 
 ### Checkout
-- Validation layer between cart and order
-- Re-checks:
-  - Product availability
-  - Soft deletion
-  - Stock availability
+- Validation boundary between cart and order
+- Re-validates product availability, deletion, and stock
 - Recalculates total amount
 - No database mutation
 
 ### Order Management
-- Immutable order creation from cart
-- Order snapshot independent of product changes
-- Order and OrderItem separation
+- Orders are immutable snapshots of cart
+- OrderItem does not reference Product entity
+- Orders survive product deletion
 - Supports order history per user
+- Initial order status is CREATED
 
 ---
 
 ## Key Design Decisions
 
-### Why Cart and Order are Separate
-- Cart represents a **temporary shopping state**
-- Order represents a **permanent business record**
-- Prevents pricing and data inconsistencies
+### Cart vs Order
+Cart is temporary and mutable.
+Order is permanent and immutable.
 
-### Why OrderItem Does Not Reference Product
-- Orders must survive product deletion
-- Ensures historical accuracy
-- Avoids breaking past orders when catalog changes
-
-### Why `priceAtAddTime` Exists
-- Product prices can change
-- Cart and order prices must remain consistent
-- Pricing is frozen at the time of user action
+### Pricing Consistency
+Product price is frozen at the time of adding to cart using priceAtAddTime.
 
 ### Active vs Soft Delete
-- `active = false` → temporarily unavailable
-- `deleted = true` → permanently removed from lifecycle
-- Deleted products never appear in cart or checkout
+active = false → temporarily unavailable  
+deleted = true → permanently removed from lifecycle
 
 ---
 
 ## Sample API Endpoints
 
 ### Auth
-POST /auth/login
-POST /auth/register
+POST /auth/register  
+POST /auth/login  
 
 ### Products
-GET /products
-POST /admin/products
-PUT /admin/products/{id}
-DELETE /admin/products/{id}
+GET /products  
+POST /admin/products  
+PUT /admin/products/{id}  
+DELETE /admin/products/{id}  
 
 ### Cart
-GET /cart
-POST /cart/items
-PUT /cart/items/{itemId}
-DELETE /cart/items/{itemId}
-DELETE /cart
+GET /cart  
+POST /cart/items  
+PUT /cart/items/{itemId}  
+DELETE /cart/items/{itemId}  
+DELETE /cart  
 
 ### Checkout & Orders
-POST /checkout
-POST /orders
-GET /orders/my
-GET /orders/{id}
+POST /checkout  
+POST /orders  
+GET /orders/my  
+GET /orders/{id}  
+
+---
+
+## How to Run
+1. Clone the repository
+2. Configure database in application.yml
+3. Run: mvn spring-boot:run
+4. Test APIs using Postman or Swagger
+
+---
+
+## Notes
+- Payment module is mocked
+- UI intentionally not included
+- Focus is backend architecture and business logic
