@@ -2,35 +2,31 @@ package com.ecommerce.dto;
 
 import java.math.BigDecimal;
 
-import com.ecommerce.product.model.Product;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-public class ProductResponse {
+public class UpdateProductRequest {
 
-	private Long id;
+	@NotBlank
 	private String name;
+
 	private String description;
+
+	@NotNull
+	@Min(0)
 	private BigDecimal price;
+
+	@NotNull
+	@Min(0)
 	private Integer stock;
+
+	@NotBlank
 	private String category;
+
 	private boolean active;
 
 	// getters & setters
-
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;
@@ -72,15 +68,11 @@ public class ProductResponse {
 		this.category = category;
 	}
 
-	public static ProductResponse from(Product product) {
-		ProductResponse res = new ProductResponse();
-		res.setId(product.getId());
-		res.setName(product.getName());
-		res.setPrice(product.getPrice());
-		res.setStock(product.getStock());
-		res.setCategory(product.getCategory());
-		res.setActive(product.isActive());
-		return res;
+	public boolean isActive() {
+		return active;
+	}
 
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 }
