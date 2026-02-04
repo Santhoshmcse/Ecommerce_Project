@@ -2,6 +2,7 @@ package com.ecommerce.serviceimpl;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import com.ecommerce.dto.CreateProductRequest;
 import com.ecommerce.dto.UpdateProductRequest;
@@ -9,6 +10,7 @@ import com.ecommerce.product.model.Product;
 import com.ecommerce.product.repository.ProductRepository;
 import com.ecommerce.service.ProductService;
 
+@Service
 public class ProductServiceImpl implements ProductService {
 
 	private final ProductRepository productRepository;
@@ -49,10 +51,13 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public void deleteProduct(Long id) {
 
-		Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+	    Product product = productRepository.findById(id)
+	            .orElseThrow(() -> new RuntimeException("Product not found"));
 
-		product.setActive(false); // 👈 SOFT DELETE
-		productRepository.save(product);
+	    product.setDeleted(true);     // ✅ SOFT DELETE
+	    product.setActive(false);     // ✅ also make it unavailable
+
+	    productRepository.save(product);
 	}
 
 	@Override

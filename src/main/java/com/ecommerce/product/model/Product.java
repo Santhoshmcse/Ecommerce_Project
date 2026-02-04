@@ -30,6 +30,9 @@ public class Product extends BaseEntity {
 	private String category;
 
 	@Column(nullable = false)
+	private boolean deleted = false;
+
+	@Column(nullable = false)
 	private boolean active = true;
 
 	// getters & setters
@@ -76,6 +79,14 @@ public class Product extends BaseEntity {
 
 	public boolean isActive() {
 		return active;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	public void setActive(boolean active) {

@@ -7,27 +7,24 @@ import java.math.BigDecimal;
 @Table(name = "order_items")
 public class OrderItem {
 
-   
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_id", nullable = false)
+	private Order order;
 
-    @Column(nullable = false)
-    private Long productId;
+	// snapshot fields (VERY IMPORTANT)
+	private Long productId;
+	private String productName;
 
-    @Column(nullable = false)
-    private Integer quantity;
+	private Integer quantity;
+	private BigDecimal price;
 
-    @Column(nullable = false)
-    private BigDecimal price;
+	private BigDecimal subTotal;
 
-    // getters & setters
-    
-    public Long getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -51,6 +48,14 @@ public class OrderItem {
 		this.productId = productId;
 	}
 
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
 	public Integer getQuantity() {
 		return quantity;
 	}
@@ -65,5 +70,13 @@ public class OrderItem {
 
 	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+
+	public BigDecimal getSubTotal() {
+		return subTotal;
+	}
+
+	public void setSubTotal(BigDecimal subTotal) {
+		this.subTotal = subTotal;
 	}
 }

@@ -1,10 +1,12 @@
 package com.ecommerce.order.repository;
 
-import com.ecommerce.order.model.Order;
 import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface OrderRepository extends JpaRepository<Order, Long> {
+import com.ecommerce.auth.model.User;
+import com.ecommerce.order.model.Order;
 
-    List<Order> findByUserIdOrderByCreatedAtDesc(Long userId);
+public interface OrderRepository extends JpaRepository<Order, Long> {
+	List<Order> findByUser(User user);
 }

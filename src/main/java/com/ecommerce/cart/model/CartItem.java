@@ -1,30 +1,41 @@
 package com.ecommerce.cart.model;
 
-import java.io.Serializable;
+import java.math.BigDecimal;
+
+import com.ecommerce.product.model.Product;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "cart_items")
-public class CartItem implements Serializable {
+@Table(name = "cart_items", uniqueConstraints = @UniqueConstraint(columnNames = { "cart_id", "product_id" }))
+public class CartItem {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
-	private Long userId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "cart_id", nullable = false)
+	private Cart cart;
 
-	@Column(nullable = false)
-	private Long productId;
+	@ManyToOne
+	@JoinColumn(name = "product_id", nullable = false)
+	private Product product;
 
 	@Column(nullable = false)
 	private Integer quantity;
+
+	@Column(nullable = false)
+	private BigDecimal priceAtAddTime;
 
 	// getters & setters
 
@@ -36,20 +47,20 @@ public class CartItem implements Serializable {
 		this.id = id;
 	}
 
-	public Long getUserId() {
-		return userId;
+	public Cart getCart() {
+		return cart;
 	}
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setCart(Cart cart) {
+		this.cart = cart;
 	}
 
-	public Long getProductId() {
-		return productId;
+	public Product getProduct() {
+		return product;
 	}
 
-	public void setProductId(Long productId) {
-		this.productId = productId;
+	public void setProduct(Product product) {
+		this.product = product;
 	}
 
 	public Integer getQuantity() {
@@ -59,4 +70,13 @@ public class CartItem implements Serializable {
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
+
+	public BigDecimal getPriceAtAddTime() {
+		return priceAtAddTime;
+	}
+
+	public void setPriceAtAddTime(BigDecimal priceAtAddTime) {
+		this.priceAtAddTime = priceAtAddTime;
+	}
+
 }
